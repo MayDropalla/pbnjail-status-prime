@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PBnJail — Stream Break Screen</title>
+<style>
+  :root{
+    --bg-1: #23120b;     /* deep warm brown */
+    --bg-2: #3a2419;     /* softer brown */
+    --panel: #efe7df;    /* off-white for text panels if needed */
+    --accent: #a36b3a;   /* peanut-butter brown */
+    --muted: #b99b8a;    /* muted tan */
+    --text: #efe7df;     /* light text */
+    --subtext: #d8c6bd;  /* slightly darker */
+  }
+
+  /* Page & layout */
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-1),var(--bg-2));font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+  .wrap{height:100%;display:flex;align-items:center;justify-content:center;padding:40px;box-sizing:border-box;}
+  .card{
+    width: min(1100px, 94vw);
+    max-width: 1400px;
+    display:grid;
+    grid-template-columns: 480px 1fr;
+    gap:36px;
+    align-items:center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:20px;
+    padding:36px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+
+  /* When OBS is narrow (portrait) stack */
+  @media (max-width:880px){
+    .card{grid-template-columns: 1fr; padding:26px; gap:18px;}
+  }
+
+  /* Left: mascot area */
+  .mascotWrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
+  .mascotBox{
+    width:420px;height:420px;
+    max-width:70vw;
+    max-height:70vw;
+    display:flex;align-items:center;justify-content:center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:18px;
+    padding:18px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+
+  /* Right: text */
+  .textWrap{color:var(--text); padding-right:8px; display:flex;flex-direction:column; gap:10px;}
+  h1{font-size:54px;line-height:1;margin:0;font-weight:700;letter-spacing:-0.5px;color:var(--text); text-shadow: 0 6px 20px rgba(0,0,0,0.6);}
+  .sub{font-size:20px;color:var(--subtext); margin-top:8px;}
+  .bigMsg{font-size:28px;margin-top:18px;color:var(--panel); background: rgba(0,0,0,0.06); padding:12px 16px; border-radius:10px; display:inline-block; box-shadow: 0 6px 18px rgba(0,0,0,0.45);}
+
+  /* Controls */
+  .controls{margin-top:28px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;}
+  .btn{
+    appearance:none;border:0;padding:12px 18px;border-radius:12px;font-weight:600;cursor:pointer;
+    background:linear-gradient(180deg,var(--accent), #7d4e2a); color:var(--panel); box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+  }
+  .btn.alt{
+    background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--subtext);
+  }
+  .note{font-size:13px;color:var(--subtext);margin-left:6px;}
+
+  /* Make sure it fits OBS cleanly (no scrollbars) */
+  body,html{overflow:hidden;}
+  /* small footer-ish note shown only in-browser, hidden in OBS if you uncheck 'show chrome' */
+  .small{font-size:12px;color:var(--muted);margin-top:8px;}
+
+  /* Utility: hide button focus outline but keep accessibility via keyboard */
+  .btn:focus{outline:3px solid rgba(255,255,255,0.06);outline-offset:2px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="main" aria-label="PBnJail stream placeholder">
+      <!-- LEFT: Mascot area -->
+      <div class="mascotWrap">
+        <div class="mascotBox" id="mascotHolder" aria-hidden="false">
+          <!-- Inline SVGs: we place both and show/hide with JS -->
+          
+          <!-- BRB mascot (smiling at camera) -->
+          <svg id="svg-brb" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="100%" height="100%" role="img" aria-label="PBnJ sandwich smiling">
+            <defs>
+              <linearGradient id="gBread" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#f0d7bb"/>
+                <stop offset="1" stop-color="#e7c9aa"/>
+              </linearGradient>
+              <linearGradient id="gFilling" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#9b5b2f"/>
+                <stop offset="1" stop-color="#c07a53"/>
+              </linearGradient>
+            </defs>
+
+            <!-- outer bread -->
+            <rect x="10" y="30" rx="36" ry="36" width="300" height="220" fill="url(#gBread)" stroke="#b88e6e" stroke-width="6"/>
+            <!-- jelly/peanut layer -->
+            <ellipse cx="160" cy="150" rx="120" ry="60" fill="url(#gFilling)" opacity="0.95"/>
+            <!-- cute face -->
+            <!-- eyes -->
+            <g transform="translate(0, -10)">
+              <circle cx="120" cy="120" r="12" fill="#2a170f"/>
+              <circle cx="200" cy="120" r="12" fill="#2a170f"/>
+              <!-- smile -->
+              <path d="M120 155 Q160 185 200 155" fill="none" stroke="#2a170f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+
+            <!-- subtle cheeks -->
+            <circle cx="100" cy="140" r="10" fill="#f0b8a1" opacity="0.12"/>
+            <circle cx="220" cy="140" r="10" fill="#f0b8a1" opacity="0.12"/>
+
+            <!-- tiny highlight -->
+            <ellipse cx="100" cy="110" rx="6" ry="3" fill="#fff" opacity="0.6"/>
+            <ellipse cx="200" cy="110" rx="6" ry="3" fill="#fff" opacity="0.6"/>
+          </svg>
+
+          <!-- AFK mascot (cooking; holding a spatula) -->
+          <svg id="svg-afk" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="100%" height="100%" role="img" aria-label="PBnJ sandwich cooking" style="display:none;">
+            <defs>
+              <linearGradient id="gBread2" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#efe0d0"/>
+                <stop offset="1" stop-color="#e1c8b1"/>
+              </linearGradient>
+              <linearGradient id="gFilling2" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#b06a3b"/>
+                <stop offset="1" stop-color="#d18557"/>
+              </linearGradient>
+            </defs>
+
+            <!-- bread background -->
+            <rect x="10" y="30" rx="36" ry="36" width="300" height="220" fill="url(#gBread2)" stroke="#caa584" stroke-width="6"/>
+            <!-- filling -->
+            <ellipse cx="160" cy="150" rx="120" ry="60" fill="url(#gFilling2)" opacity="0.98"/>
+
+            <!-- face near right side so left can hold spatula -->
+            <g transform="translate(20,0)">
+              <circle cx="220" cy="120" r="12" fill="#2a170f"/>
+              <circle cx="260" cy="120" r="12" fill="#2a170f"/>
+              <path d="M220 155 Q240 170 260 155" fill="none" stroke="#2a170f" stroke-width="5" stroke-linecap="round"/>
+            </g>
+
+            <!-- spatula (left hand) -->
+            <g transform="translate(-10,46)">
+              <rect x="40" y="120" width="12" height="72" rx="6" fill="#2f231d"/>
+              <rect x="28" y="100" width="44" height="28" rx="6" fill="#4a3f3a"/>
+              <!-- small shine -->
+              <rect x="32" y="106" width="6" height="4" rx="2" fill="#d6d3d3" opacity="0.35"/>
+            </g>
+
+            <!-- small steam lines over spatula/pan -->
+            <g transform="translate(80,50)" stroke="#eee" stroke-width="2" opacity="0.55" stroke-linecap="round">
+              <path d="M30 60 q6 -18 0 -30"/>
+              <path d="M46 60 q6 -20 0 -34"/>
+            </g>
+          </svg>
+
+        </div> <!-- /.mascotBox -->
+
+        <div style="text-align:center;">
+          <div style="font-weight:700;color:var(--text);font-size:20px">PBnJail</div>
+          <div class="small">Static mascots — made for OBS browser source</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: message + controls -->
+      <div class="textWrap" aria-hidden="false">
+        <h1 id="titleLarge">PB will be back shortly</h1>
+        <div class="sub">Use this between games or whenever your client goes black.</div>
+        <div class="bigMsg" id="bigMsg">PB will be back shortly 🥪</div>
+
+        <div class="controls" role="toolbar" aria-label="Scene controls">
+          <button class="btn" id="toBRB" title="Switch to BRB (default)">BRB — Back shortly</button>
+          <button class="btn alt" id="toAFK" title="Switch to AFK (away)">AFK — Away from keyboard</button>
+          <button class="btn alt" id="toggleBG" title="Toggle background dim">Toggle Background</button>
+          <div class="note">Tip: in OBS add this as a Browser Source and set the resolution (e.g., 1920×1080).</div>
+        </div>
+
+        <div class="small" style="margin-top:8px;color:var(--muted)">
+          Quick controls: keyboard <kbd>B</kbd> → BRB, <kbd>A</kbd> → AFK, <kbd>D</kbd> → toggle background dim.
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Elements
+  const svgBrb = document.getElementById('svg-brb');
+  const svgAfk = document.getElementById('svg-afk');
+  const titleLarge = document.getElementById('titleLarge');
+  const bigMsg = document.getElementById('bigMsg');
+  const toBRB = document.getElementById('toBRB');
+  const toAFK = document.getElementById('toAFK');
+  const toggleBG = document.getElementById('toggleBG');
+
+  // Default mode: BRB
+  let mode = localStorage.getItem('pbnj_mode') || 'brb';
+  let dimmed = false;
+
+  function applyMode(m){
+    mode = m;
+    localStorage.setItem('pbnj_mode', mode);
+    if(mode === 'brb'){
+      svgBrb.style.display = 'block';
+      svgAfk.style.display = 'none';
+      titleLarge.textContent = 'PB will be back shortly';
+      bigMsg.textContent = 'PB will be back shortly 🥪';
+      document.documentElement.style.setProperty('--accent','#a36b3a');
+      document.documentElement.style.setProperty('--subtext','#d8c6bd');
+    } else {
+      svgBrb.style.display = 'none';
+      svgAfk.style.display = 'block';
+      titleLarge.textContent = 'Away From Keyboard';
+      bigMsg.textContent = 'Away From Keyboard — be right with you 👨‍🍳';
+      document.documentElement.style.setProperty('--accent','#7a5a3e');
+      document.documentElement.style.setProperty('--subtext','#d1bcae');
+    }
+  }
+
+  // background dim toggle: toggles to pitch-black variant for literal "pitch black" option
+  function toggleBackground(){
+    dimmed = !dimmed;
+    if(dimmed){
+      document.body.style.background = '#000000'; // pitch black
+      document.documentElement.style.setProperty('--text','#efe7df');
+      document.documentElement.style.setProperty('--muted','#8b7a72');
+    } else {
+      document.body.style.background = 'linear-gradient(180deg,var(--bg-1),var(--bg-2))';
+      document.documentElement.style.setProperty('--text','#efe7df');
+    }
+  }
+
+  // Buttons
+  toBRB.addEventListener('click', ()=>applyMode('brb'));
+  toAFK.addEventListener('click', ()=>applyMode('afk'));
+  toggleBG.addEventListener('click', ()=>toggleBackground());
+
+  // Keyboard shortcuts
+  window.addEventListener('keydown', (e)=>{
+    if(e.key === 'b' || e.key === 'B') applyMode('brb');
+    if(e.key === 'a' || e.key === 'A') applyMode('afk');
+    if(e.key === 'd' || e.key === 'D') toggleBackground();
+  });
+
+  // Initialize
+  applyMode(mode);
+
+  // Optionally: honor URL param ?mode=afk or ?mode=brb
+  (function readURL(){
+    try{
+      const qp = new URLSearchParams(location.search);
+      const m = qp.get('mode');
+      if(m === 'afk' || m === 'brb'){ applyMode(m); }
+      if(qp.get('bg') === 'dark') toggleBackground();
+    }catch(e){}
+  })();
+
+  // Make sure page never scrolls (for OBS)
+  document.documentElement.style.overflow = 'hidden';
+</script>
+</body>
+</html>
